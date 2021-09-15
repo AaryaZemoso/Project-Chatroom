@@ -1,0 +1,34 @@
+Pages:-
+    - Login
+    - User Dashboard
+    - Admin Dashboard
+    - Chatroom
+
+Entities:- 
+    - Users
+    - Chatrooms
+
+Tables:-
+    Chats
+        UserID, ChatroomID, Message, Timestamp
+    Users
+        UserID, Name, Email, Password, Role
+    Chatrooms
+        ChatroomID, Owner(UserID), Description
+
+Operations:-
+    User:-
+        CreateRoom
+        JoinRoom
+        DeleteRoom
+        SendMessage
+    Admin:-
+        CreateRoom
+        DeleteRoom
+        ModifyUsers
+        DeleteUsers
+
+
+
+
+        
