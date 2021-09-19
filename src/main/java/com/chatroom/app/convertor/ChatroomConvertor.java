@@ -1,12 +1,11 @@
 package com.chatroom.app.convertor;
 
-import com.chatroom.app.dao.UserRepository;
+import com.chatroom.app.dao.user.UserRepository;
 import com.chatroom.app.dto.chatroom.ChatroomRequestDTO;
 import com.chatroom.app.dto.chatroom.ChatroomResponseDTO;
 import com.chatroom.app.entity.Chatroom;
 import com.chatroom.app.entity.User;
 import com.chatroom.app.exception.user.UserNotFoundException;
-import com.chatroom.app.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

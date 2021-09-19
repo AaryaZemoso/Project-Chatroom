@@ -11,7 +11,6 @@ import java.util.logging.Logger;
 @Aspect
 @Component
 public class MessageAspect {
-
     private Logger logger = Logger.getLogger(getClass().getName());
 
     @Before("execution(* com.chatroom.app.controller.MessageController.sendMessage(..))")
@@ -19,10 +18,11 @@ public class MessageAspect {
 
         logger.info("\n=====> [I] : Before Storing into message table");
 
-        Object args[] = joinPoint.getArgs();
+        Object[] args = joinPoint.getArgs();
         for(Object arg : args){
             if(arg instanceof MessageDTO)
-            logger.info("\n=========>[I] : \tUser : " + ((MessageDTO)arg).getUserId() + ", Message : "+ ((MessageDTO)arg).getMessage());
+                logger.info("\n=========>[I] : \tUser : " + ((MessageDTO)arg).getUserId() + ", Message : "+ ((MessageDTO)arg).getMessage());
         }
     }
+
 }

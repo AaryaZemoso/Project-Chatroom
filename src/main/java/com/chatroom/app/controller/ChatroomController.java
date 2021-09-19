@@ -2,8 +2,8 @@ package com.chatroom.app.controller;
 
 import com.chatroom.app.dto.chatroom.ChatroomRequestDTO;
 import com.chatroom.app.dto.chatroom.ChatroomResponseDTO;
-import com.chatroom.app.service.ChatroomService;
-import com.chatroom.app.service.UserService;
+import com.chatroom.app.service.chatroom.ChatroomService;
+import com.chatroom.app.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

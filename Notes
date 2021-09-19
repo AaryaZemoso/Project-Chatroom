@@ -17,11 +17,13 @@ Tables:-
         ChatroomID, Owner(UserID), Description
 
 Operations:-
+
     User:-
         CreateRoom
         JoinRoom
         DeleteRoom
         SendMessage
+
     Admin:-
         CreateRoom
         DeleteRoom
@@ -29,6 +31,51 @@ Operations:-
         DeleteUsers
 
 
+------------------------------------------------------------------------------------------------------------------
 
+Technical Side:-
 
+    Restrict Access using Security using AntMatchers
+    Use AOP to Authenticate?????
+
+Login Page:-
+
+    Sign up form functionality - Done But needs styling
+        direct login to the dashboard - x
+    Validation???
+
+Dashboard:
+
+    Functionality
         
+        Add Chatroom    - USER & ADMIN - DONE
+        Delete Chatroom - USER & ADMIN ----------------------------------------------------------!
+
+        Add User        - ADMIN - DONE
+        Delete User     - ADMIN -----------------------------------------------------------------!
+
+    List all chatrooms - DONE
+    Cards for Chatrooms - DONE
+
+    Clicking on a Card should redirect to chatroom page - DONE
+
+Chatrooms:
+
+    Messaging functionality ---------------------------------------------------------------------!
+    Adjust Page Margin top - DONE
+    Remove Communities Tabs - DONE
+
+Dashboard and Chatrooms:
+
+    Change "USERNAME" on top right with actual name of the user - DONE
+
+    Remove Search bar - DONE
+    Remove Notifications - DONE
+
+    Remove Profile - DONE (Can change to edit profile if needed so the user can update their profile)
+    Remove Settings - DONE
+
+    PRIORITY : HIGH
+    Add Modal Feature for dropdown so that we can add new entries in users and chatrooms - DONE
+
+
