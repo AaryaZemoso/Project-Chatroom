@@ -62,7 +62,7 @@
             <li class="nav-item">
                 <a class="nav-link" href="#" data-toggle="modal" data-target="#deleteChatroomModal">
                     <i class="fas fa-fw fa-java"></i>
-                    <span>Delete Chatroom</span></a>
+                    <span>View Chatroom</span></a>
             </li>
 
             <hr class="sidebar-divider my-0">
@@ -76,7 +76,7 @@
             <li class="nav-item" th:if='${authoritiesList.contains("ROLE_ADMIN")}'>
                 <a class="nav-link" href="#" data-toggle="modal" data-target="#deleteUserModal">
                     <i class="fas fa-fw fa-java"></i>
-                    <span>Delete User</span></a>
+                    <span>View User</span></a>
             </li>
 
 
@@ -180,7 +180,7 @@
 
 
     <!-- User Modal -->
-    <div class="modal fade" id="userModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel1"
+    <div th:if='${authoritiesList.contains("ROLE_ADMIN")}' class="modal fade" id="userModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel1"
          aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -190,10 +190,10 @@
                         <span aria-hidden="true">×</span>
                     </button>
                 </div>
-                <form th:action="@{/addUser}" method="POST">
+                <form id="add-user-form">
                     <div class="modal-body">
                         <div class="form-group">
-                            <input type="text" class="form-control" name="username" placeholder="User Name" value="" />
+                            <input type="text" class="form-control" name="name" placeholder="User Name" value="" />
                         </div>
                         <div class="form-group">
                             <input type="text" class="form-control" name="email" placeholder="User Email" value="" />
@@ -213,7 +213,7 @@
 
 
     <!-- Delete User Modal -->
-    <div class="modal fade" id="deleteUserModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel1"
+    <div th:if='${authoritiesList.contains("ROLE_ADMIN")}' class="modal fade" id="deleteUserModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel1"
          aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -227,9 +227,10 @@
                     <div class="list-group">
                         <div class="list-group-item" th:each="delete_user : ${userList}">
                             <div class="row" style="padding: 0% 7%;justify-content: space-between; text-align: center;">
-                                <div><h6 th:text="${delete_user.name}"></h6></div>
                                 <div><h6 th:text="${delete_user.email}"></h6></div>
-                                <div><a th:href="@{deleteUser/{id}(id=${delete_user.id})}" class="btn btn-danger btn-sm">Delete</a></div>
+                                <div>
+                                    <button class="btn btn-danger btn-sm" th:attr="onclick=|deleteUserById('${delete_user.id}')|"> Delete </button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -250,14 +251,14 @@
                         <span aria-hidden="true">×</span>
                     </button>
                 </div>
-                <form th:action="@{/addChatroom}" method="POST">
+                <form id="add-form">
                     <div class="modal-body">
-                    <div class="form-group">
-                        <input type="text" class="form-control" name="chatroomName" placeholder="Chatroom Name" value="" />
-                    </div>
-                    <div class="form-group">
-                        <input type="text" class="form-control" name="chatroomDescription" placeholder="Chatroom Description" value="" />
-                    </div>
+                        <div class="form-group">
+                            <input type="text" class="form-control" name="name" placeholder="Chatroom Name" value="" />
+                        </div>
+                        <div class="form-group">
+                            <input type="text" class="form-control" name="description" placeholder="Chatroom Description" value="" />
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
@@ -268,8 +269,9 @@
         </div>
     </div>
 
-    <!-- Delete Chatroom model -->
-    <div class="modal fade" id="deleteChatroomModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel1"
+
+    <!-- View Chatroom model -->
+    <div  class="modal fade" id="deleteChatroomModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel1"
          aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -281,10 +283,13 @@
                 </div>
                 <div class="modal-body">
                     <div class="list-group">
-                        <div class="list-group-item" th:each="delete_chatroom : ${userChatroomList}">
+                        <div class="list-group-item" th:each="chatroomTemp : ${userChatroomList}">
                             <div class="row" style="padding: 0% 7%;justify-content: space-between; text-align: center;">
-                                <div><h6 th:text="${delete_chatroom.chatroomName}"></h6></div>
-                                <div><a th:href="@{deleteChatroom/{id}(id=${delete_chatroom.chatroomId})}" class="btn btn-danger btn-sm">Delete</a></div>
+                                <div><h6 th:text="${chatroomTemp.chatroomName}"></h6></div>
+                                <div>
+                                    <a th:href="@{~/updateChatroom/{id}(id=${chatroomTemp.chatroomId})}" class="btn btn-info btn-sm">Update</a>
+                                    <button class="btn btn-danger btn-sm" th:attr="onclick=|deleteById('${chatroomTemp.chatroomId}')|"> Delete </button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -329,6 +334,10 @@
     <!-- Page level custom scripts -->
     <script th:src="@{/js/demo/chart-area-demo.js}"></script>
     <script th:src="@{/js/demo/chart-pie-demo.js}"></script>
+
+    <script th:src="@{/utils.js}"></script>
+    <script th:src="@{/admin-utils.js}" th:if='${authoritiesList.contains("ROLE_ADMIN")}'></script>
+
 
 </body>
 

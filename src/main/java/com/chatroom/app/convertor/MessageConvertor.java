@@ -20,7 +20,7 @@ public class MessageConvertor {
 
         responseDTO.setSenderId(message.getId());
         responseDTO.setSenderName(message.getUser().getName());
-        responseDTO.setMessage(message.getMessage());
+        responseDTO.setMessage(message.getMessageContent());
 
         return responseDTO;
     }

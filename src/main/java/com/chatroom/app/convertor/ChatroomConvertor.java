@@ -49,4 +49,16 @@ public class ChatroomConvertor {
         return newChatroom;
     }
 
+    public ChatroomRequestDTO getRequest(Chatroom chatroom){
+
+        ChatroomRequestDTO requestDTO = new ChatroomRequestDTO();
+
+        requestDTO.setId(chatroom.getId());
+        requestDTO.setUserId(chatroom.getUser().getId());
+        requestDTO.setName(chatroom.getName());
+        requestDTO.setDescription(chatroom.getDesc());
+
+        return requestDTO;
+    }
+
 }

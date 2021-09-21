@@ -33,6 +33,8 @@ Operations:-
 
 ------------------------------------------------------------------------------------------------------------------
 
+18-09-2021
+
 Technical Side:-
 
     Restrict Access using Security using AntMatchers
@@ -78,4 +80,16 @@ Dashboard and Chatrooms:
     PRIORITY : HIGH
     Add Modal Feature for dropdown so that we can add new entries in users and chatrooms - DONE
 
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+20-09-2021
+
+Refactor code to use Appropriate endpoints
+    Use AJAX to do operations
+
+Add new Modals/Pages for Updating and Deletion
+
+Change logger to slf4j Logger                   ------------------ DONE
+
+Fix logging out from chatroom page not working  ------------------ DONE
 

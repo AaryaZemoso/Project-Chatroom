@@ -24,7 +24,7 @@ public class MessageDAOImpl implements MessageDAO{
 
         newMessage.setId(0);
         newMessage.setUser(user);
-        newMessage.setMessage(message);
+        newMessage.setMessageContent(message);
         newMessage.setChatroom(chatroom);
         newMessage.setTimestamp(LocalDateTime.now());
 

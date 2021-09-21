@@ -24,7 +24,7 @@ public class Message {
     private User user;
 
     @Column(name = "message")
-    private String message;
+    private String messageContent;
 
     @OneToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinColumn(name = "chatroom_id")

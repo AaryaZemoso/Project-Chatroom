@@ -19,7 +19,6 @@ public class MessageController {
     @Autowired
     private MessageConvertor messageConvertor;
 
-    // TODO: Remove User ID from the Path and think of a way to get user id from the front end
     @MessageMapping("/chats/{chatroomId}")
     @SendTo("/message/{chatroomId}")
     public MessageResponseDTO sendMessage(@DestinationVariable int chatroomId, MessageDTO message){

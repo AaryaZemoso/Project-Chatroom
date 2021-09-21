@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -37,7 +38,8 @@ public class ChatroomServiceImpl implements ChatroomService {
         return chatroomRepository.findAll()
                 .stream()
                 .map(chatroomConvertor::getResponse)
-                .collect(Collectors.toList());
+                .collect(Collectors.toList())
+                ;
     }
 
     @Override
@@ -50,7 +52,7 @@ public class ChatroomServiceImpl implements ChatroomService {
 
         List<Chatroom> listOfChatrooms = query.getResultList();
         if(listOfChatrooms == null)
-            return null;
+            return new ArrayList<>();
 
         return listOfChatrooms.stream().map(chatroomConvertor::getResponse).collect(Collectors.toList());
 
@@ -65,7 +67,7 @@ public class ChatroomServiceImpl implements ChatroomService {
         query.setParameter("chatroomId", chatroomId);
         query.setParameter("userId", userId);
 
-        return query.getResultList().size() > 0;
+        return !query.getResultList().isEmpty();
     }
 
     @Override

@@ -27,7 +27,8 @@ create table `chatrooms`(
     `name` varchar(50),
     `description` varchar(200),
 
-    foreign key (`user_id`) references `users`(`id`)
+    foreign key (`user_id`) references `users`(`id`) on delete restrict
+
 );
 
 drop table if exists `messages`;
@@ -38,10 +39,12 @@ create table `messages`(
     `message` varchar(200),
     `timestamp` timestamp,
     
-    foreign key (`user_id`) references `users`(`id`),
-    foreign key (`chatroom_id`) references `chatrooms`(`id`)
+    foreign key (`user_id`) references `users`(`id`) on delete set null,
+    foreign key (`chatroom_id`) references `chatrooms`(`id`) on delete set null
 );
 
 insert into `users` values(1, 'admin', 'admin', '$2a$10$sxmI1wfaAQRN8hIIP8z1Tuw6O5X52lh25IxnAetVX4RAzmZhKYMH.', 1);
 insert into `authorities` values(1, 'admin', 'ROLE_ADMIN');
 insert into `authorities` values(2, 'admin', 'ROLE_USER');
+
+insert into `chatrooms` values(1, 1, 'General', 'For Everyone');

@@ -51,7 +51,7 @@ public class UserServiceImpl implements UserService {
         Optional<User> user = userRepository.findById(id);
 
         if(!user.isPresent())
-            throw new UserNotFoundException("User with " + id + " not found");
+            throw new UserNotFoundException("User with id " + id + " not found");
 
         return user.get();
     }
@@ -88,5 +88,11 @@ public class UserServiceImpl implements UserService {
         query.setParameter("email", email);
 
         return query.getSingleResult();
+    }
+
+    @Override
+    public void update(User user) {
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        userRepository.save(user);
     }
 }

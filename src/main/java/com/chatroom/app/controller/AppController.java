@@ -1,39 +1,32 @@
 package com.chatroom.app.controller;
 
 import com.chatroom.app.convertor.ChatroomConvertor;
+import com.chatroom.app.convertor.UserConvertor;
 import com.chatroom.app.dao.authorities.AuthoritiesDAO;
 import com.chatroom.app.dto.chatroom.ChatroomRequestDTO;
 import com.chatroom.app.dto.chatroom.ChatroomResponseDTO;
+import com.chatroom.app.dto.user.UserDTO;
 import com.chatroom.app.dto.user.UserResponseDTO;
 import com.chatroom.app.entity.Authorities;
-import com.chatroom.app.entity.Chatroom;
-import com.chatroom.app.entity.Roles;
 import com.chatroom.app.entity.User;
 import com.chatroom.app.service.chatroom.ChatroomService;
-import com.chatroom.app.service.security.SecurityService;
 import com.chatroom.app.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.web.servlet.server.Session;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 
-import javax.management.relation.Role;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.util.List;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 @Controller
 public class AppController {
 
-    private Logger logger = Logger.getLogger(getClass().getName());
 
     @Autowired
     private ChatroomService chatroomService;
@@ -45,10 +38,10 @@ public class AppController {
     private UserService userService;
 
     @Autowired
-    private AuthoritiesDAO authoritiesDAO;
+    private UserConvertor userConvertor;
 
     @Autowired
-    private SecurityService securityService;
+    private AuthoritiesDAO authoritiesDAO;
 
     @Autowired
     private ChatroomController chatroomController;
@@ -58,28 +51,6 @@ public class AppController {
         return "login";
     }
 
-    @GetMapping("/dashboard")
-    public String dashboard(Model model){
-
-        SecurityContext securityContext = SecurityContextHolder.getContext();
-
-        User u = userService.findByEmail(securityContext.getAuthentication().getName());
-        List<String> authoritiesList = authoritiesDAO.findByUsername(u.getEmail()).stream().map(authorities -> authorities.getAuthority()).collect(Collectors.toList());
-        List<UserResponseDTO> userResponseDTOList = userService.findAll();
-        List<ChatroomResponseDTO> chatroomList = chatroomService.findAll();
-
-        model.addAttribute("user", u);
-        model.addAttribute("authoritiesList", authoritiesList);
-        model.addAttribute("userList", userResponseDTOList);
-        model.addAttribute("chatroomList", chatroomList);
-
-        if(!authoritiesList.contains("ROLE_ADMIN"))
-            model.addAttribute("userChatroomList", chatroomService.findAllByUserId(u.getId()));
-        else
-            model.addAttribute("userChatroomList", chatroomList);
-        return "dashboard";
-    }
-
     @GetMapping("/register")
     public String getRegisterForm(Model model){
         model.addAttribute("signUpUser", new User());
@@ -87,90 +58,76 @@ public class AppController {
     }
 
     @PostMapping("/register")
-    public String register(@ModelAttribute("signUpUser") User user) throws Exception{
+    public String register(@ModelAttribute("signUpUser") UserDTO userDTO){
 
-        user.setId(0);
-        user.setEnabled(1);
+        userDTO.setId(0);
+        userDTO.setEnabled(1);
 
-        userService.save(user);
+        User newUser = userConvertor.getUser(userDTO);
+
+        userService.save(newUser);
 
         return "redirect:/login";
     }
 
+
+    @GetMapping("/dashboard")
+    public String dashboard(Model model){
+        addCommonModelAttributes(model);
+        return "dashboard";
+    }
+
+
     @GetMapping("/chat/{id}")
-    public String chatroom(@PathVariable("id") int id, HttpServletResponse response, Model model){
+    public String chatroom(@PathVariable("id") int id, Model model){
+        addCommonModelAttributes(model);
 
-        User u = userService.findByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
-        List<String> authoritiesList = authoritiesDAO.findByUsername(u.getEmail()).stream().map(authorities -> authorities.getAuthority()).collect(Collectors.toList());
         ChatroomResponseDTO chatroom = chatroomConvertor.getResponse(chatroomService.findById(id));
-        List<UserResponseDTO> userResponseDTOList = userService.findAll();
-
-        model.addAttribute("user", u);
-        model.addAttribute("authoritiesList", authoritiesList);
         model.addAttribute("chatroom", chatroom);
-        model.addAttribute("userList", userResponseDTOList);
-
 
         return "chatroom";
     }
 
-    @PostMapping("/addChatroom")
-    public String addChatroom(@RequestParam("chatroomName") String chatroomName, @RequestParam("chatroomDescription") String chatroomDescription){
 
-        User u = userService.findByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
+    @GetMapping("/updateChatroom/{id}")
+    public String updateChatroom(@PathVariable("id") int id, Model model){
+        addCommonModelAttributes(model);
 
-        Chatroom chatroom = new Chatroom();
+        ChatroomRequestDTO chatroom = chatroomConvertor.getRequest(chatroomService.findById(id));
+        model.addAttribute("update_chatroom", chatroom);
 
-        chatroom.setId(0);
-        chatroom.setUser(u);
-        chatroom.setName(chatroomName);
-        chatroom.setDesc(chatroomDescription);
-
-        chatroomService.save(chatroom);
-
-        return "redirect:/dashboard";
+        return "update-chatroom";
     }
 
-    @PostMapping("/addUser")
-    public String addUser(@RequestParam("username") String username, @RequestParam("email") String email, @RequestParam("password") String password){
+    @GetMapping("/updateUser/{id}")
+    public String updateUser(@PathVariable("id") int id, Model model){
 
-        User u = new User();
 
-        u.setId(0);
-        u.setEnabled(1);
+        User updateUser = userService.findById(id);
+        model.addAttribute("update_user", updateUser);
 
-        u.setPassword(password);
-        u.setName(username);
-        u.setEmail(email);
-
-        userService.save(u);
-
-        return "redirect:/dashboard";
+        return "update-chatroom";
     }
 
-    @GetMapping("/deleteUser/{id}")
-    public String deleteUser(@PathVariable("id") int id){
-        userService.deleteById(id);
-        return "redirect:/dashboard";
-    }
+    // ---------------------------- Helper Functions ------------------------------------
 
-    @GetMapping("/deleteChatroom/{id}")
-    public String deleteChatroom(@PathVariable("id") int id){
+    private void addCommonModelAttributes(Model model){
 
         SecurityContext securityContext = SecurityContextHolder.getContext();
+
         User u = userService.findByEmail(securityContext.getAuthentication().getName());
-        List<String> authoritiesList = authoritiesDAO.findByUsername(u.getEmail()).stream().map(authorities -> authorities.getAuthority()).collect(Collectors.toList());
+        List<String> authoritiesList = authoritiesDAO.findByUsername(u.getEmail()).stream().map(Authorities::getAuthority).collect(Collectors.toList());
+        List<UserResponseDTO> userResponseDTOList = userService.findAll();
+        List<ChatroomResponseDTO> chatroomList = chatroomService.findAll();
+
+        model.addAttribute("chatroomList", chatroomList);
+        model.addAttribute("user", u);
+        model.addAttribute("authoritiesList", authoritiesList);
+        model.addAttribute("userList", userResponseDTOList);
 
         if(!authoritiesList.contains("ROLE_ADMIN"))
-        {
-            if(chatroomService.checkIfChatroomBelongsToUser(id, u.getId()));
-                chatroomService.deleteById(id);
-        }
-
+            model.addAttribute("userChatroomList", chatroomService.findAllByUserId(u.getId()));
         else
-            chatroomService.deleteById(id);
-
-        return "redirect:/dashboard";
+            model.addAttribute("userChatroomList", chatroomList);
     }
-
 }
