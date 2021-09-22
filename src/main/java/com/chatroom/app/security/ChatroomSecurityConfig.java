@@ -46,37 +46,34 @@ public class ChatroomSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 
-            http
-                    .csrf()
-                        .disable()
+        http
+            .authorizeRequests()
+                .antMatchers("/register", "/resources/**")
+                    .permitAll()
+                .antMatchers("/api/**")
+                    .hasRole("ADMIN")
+            .antMatchers("/dashboard")
+                .hasAnyRole("USER", "ADMIN")
+            .anyRequest()
+                .authenticated()
 
-                    .authorizeRequests()
-                        .antMatchers("/api/**")
-                            .hasRole("ADMIN")
-                        .antMatchers("/register", "/resources/**")
-                            .permitAll()
-                    .antMatchers("/dashboard")
-                        .hasAnyRole("USER", "ADMIN")
-                    .anyRequest()
-                        .authenticated()
+        .and()
 
-                    .and()
-
-                    .formLogin()
-                        .loginPage("/login")
-                            .loginProcessingUrl("/authenticateUser")
+            .formLogin()
+                .loginPage("/login")
+                    .loginProcessingUrl("/authenticateUser")
 //                            .successForwardUrl("/dashboard")
-                        .permitAll()
+                .permitAll()
 
-                    .and()
+        .and()
 
-                    .logout()
-                        .permitAll()
+            .logout()
+                .permitAll()
 
-                    .and()
+        .and()
 
-                    .httpBasic()
-            ;
+            .httpBasic()
+        ;
 
     }
 }

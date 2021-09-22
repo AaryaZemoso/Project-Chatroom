@@ -14,5 +14,4 @@ public interface ChatroomService {
     void save(ChatroomRequestDTO chatroom);
     List<ChatroomResponseDTO> findAll();
     List<ChatroomResponseDTO> findAllByUserId(int userid);
-    boolean checkIfChatroomBelongsToUser(int chatroomId, int userId);
 }

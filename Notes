@@ -93,3 +93,10 @@ Change logger to slf4j Logger                   ------------------ DONE
 
 Fix logging out from chatroom page not working  ------------------ DONE
 
+--------------------------------------------------------------------
+
+LOGOUT Issue
+Show default messages in view chatroom
+Change view chatroom text to manage chatroom
+Change Modal Headings
+Add Heading in dashboard saying "List of chatrooms"

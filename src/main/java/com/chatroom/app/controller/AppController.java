@@ -27,7 +27,6 @@ import java.util.stream.Collectors;
 @Controller
 public class AppController {
 
-
     @Autowired
     private ChatroomService chatroomService;
 
@@ -42,9 +41,6 @@ public class AppController {
 
     @Autowired
     private AuthoritiesDAO authoritiesDAO;
-
-    @Autowired
-    private ChatroomController chatroomController;
 
     @GetMapping("/login")
     public String loginForm(){
@@ -95,16 +91,6 @@ public class AppController {
 
         ChatroomRequestDTO chatroom = chatroomConvertor.getRequest(chatroomService.findById(id));
         model.addAttribute("update_chatroom", chatroom);
-
-        return "update-chatroom";
-    }
-
-    @GetMapping("/updateUser/{id}")
-    public String updateUser(@PathVariable("id") int id, Model model){
-
-
-        User updateUser = userService.findById(id);
-        model.addAttribute("update_user", updateUser);
 
         return "update-chatroom";
     }

@@ -1,12 +1,14 @@
 package com.chatroom.app.exception.chatroom;
 
 import com.chatroom.app.dto.ErrorResponseDTO;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 @ControllerAdvice
+@Order(2)
 public class ChatroomExceptionHandler {
 
     @ExceptionHandler

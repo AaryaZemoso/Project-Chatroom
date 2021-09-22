@@ -17,11 +17,37 @@
     };
 })(jQuery);
 
+var header = $("meta[name='_csrf_header']").attr("content");
+var token = $("meta[name='_csrf']").attr("content");
+
+$('#logout-btn').on('click', function(e){
+    $.ajax({
+        url: '/logout',
+        type: 'POST',
+        beforeSend: function(request) {
+            request.setRequestHeader(
+                header,
+                token
+            );
+        },
+        success: function(result) {
+            // Do something with the result
+            window.location.href="/login";
+        }
+    })
+});
+
 $('#add-form').on('submit', function(e){
 
      $.ajax({
         url: '/chatroom',
         type: 'POST',
+        beforeSend: function(request) {
+            request.setRequestHeader(
+                header,
+                token
+            );
+        },
         contentType: 'application/json',
         dataType: 'json',
         data: JSON.stringify($('#add-form').serializeFormJSON()),
@@ -39,6 +65,12 @@ $("#update-form").on('submit', function (e) {
     $.ajax({
         url: '/chatroom',
         type: 'PUT',
+        beforeSend: function(request) {
+                    request.setRequestHeader(
+                        header,
+                        token
+                    );
+                },
         contentType: 'application/json',
         dataType: 'json',
         data: JSON.stringify($('#update-form').serializeFormJSON()),
@@ -57,6 +89,12 @@ function deleteById(id){
      $.ajax({
         url: '/chatroom/' + id,
         type: 'DELETE',
+        beforeSend: function(request) {
+                    request.setRequestHeader(
+                        header,
+                        token
+                    );
+                },
         success: function(result) {
             // Do something with the result
             window.location.href="/dashboard";

@@ -8,8 +8,6 @@ import com.chatroom.app.entity.Authorities;
 import com.chatroom.app.entity.Roles;
 import com.chatroom.app.entity.User;
 import com.chatroom.app.exception.user.UserNotFoundException;
-import org.hibernate.Session;
-import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -68,26 +66,21 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteById(int id) {
 
-        User user = this.findById(id);
+        Optional<User> tempUser = userRepository.findById(id);
 
-        if(user != null)
-        {
-            authoritiesDAO.delete(user.getEmail());
-            userRepository.deleteById(id);
-        }
-        else
+        if(!tempUser.isPresent())
             throw new UserNotFoundException("User with id " + id + " not found");
+
+        User user = tempUser.get();
+
+        authoritiesDAO.delete(user.getEmail());
+        userRepository.deleteById(id);
+
     }
 
     @Override
     public User findByEmail(String email) {
-
-        Session session = entityManager.unwrap(Session.class);
-        Query<User> query = session.createQuery("from User where email = :email");
-
-        query.setParameter("email", email);
-
-        return query.getSingleResult();
+       return userRepository.findByEmail(email);
     }
 
     @Override

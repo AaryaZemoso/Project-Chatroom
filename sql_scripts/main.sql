@@ -4,7 +4,6 @@ create database `chatrooms`;
 
 use `chatrooms`;
 
-drop table if exists `users`;
 create table `users`(
     `id` int primary key AUTO_INCREMENT,
     `name` varchar(50),

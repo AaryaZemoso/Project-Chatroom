@@ -7,15 +7,11 @@ import com.chatroom.app.dto.chatroom.ChatroomRequestDTO;
 import com.chatroom.app.dto.chatroom.ChatroomResponseDTO;
 import com.chatroom.app.entity.Chatroom;
 import com.chatroom.app.exception.chatroom.ChatroomNotFoundException;
-import org.hibernate.Session;
-import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -45,29 +41,13 @@ public class ChatroomServiceImpl implements ChatroomService {
     @Override
     public List<ChatroomResponseDTO> findAllByUserId(int userId) {
 
-        Session session = entityManager.unwrap(Session.class);
+        List<Chatroom> listOfChatroom = chatroomRepository.findAllById(Arrays.asList(userId));
 
-        Query<Chatroom> query = session.createQuery("from Chatroom where user_id = :userId");
-        query.setParameter("userId", userId);
-
-        List<Chatroom> listOfChatrooms = query.getResultList();
-        if(listOfChatrooms == null)
+        if(listOfChatroom.isEmpty())
             return new ArrayList<>();
 
-        return listOfChatrooms.stream().map(chatroomConvertor::getResponse).collect(Collectors.toList());
+        return listOfChatroom.stream().map(chatroomConvertor::getResponse).collect(Collectors.toList());
 
-    }
-
-    @Override
-    public boolean checkIfChatroomBelongsToUser(int chatroomId, int userId) {
-
-        Session session = entityManager.unwrap(Session.class);
-
-        Query<Chatroom> query = session.createQuery("from Chatroom where id = :chatroomId and user_id = :userId");
-        query.setParameter("chatroomId", chatroomId);
-        query.setParameter("userId", userId);
-
-        return !query.getResultList().isEmpty();
     }
 
     @Override
@@ -96,7 +76,7 @@ public class ChatroomServiceImpl implements ChatroomService {
     @Override
     public void deleteById(int id) {
 
-        if(this.findById(id) == null)
+        if(!chatroomRepository.findById(id).isPresent())
             throw new ChatroomNotFoundException("Chatroom with id " + id + " not found");
 
         chatroomRepository.deleteById(id);
